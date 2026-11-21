@@ -1,17 +1,12 @@
 import React, { useState, useMemo } from "react";
 import {
   Calendar,
-  Clock,
   UserCheck,
   Users,
-  ShieldCheck,
   LogIn,
   LogOut,
   UserPlus,
-  CheckCircle2,
-  XCircle,
   AlertCircle,
-  Search,
   Plus,
   ChevronRight,
   ChevronLeft,
@@ -19,9 +14,6 @@ import {
   FileText,
   Lock,
   User,
-  Phone,
-  IdCard,
-  Trash2,
 } from "lucide-react";
 
 const JALALI_MONTHS = [
@@ -98,9 +90,8 @@ function buildInitialSchedules() {
 export default function App() {
   const [users, setUsers] = useState(INITIAL_USERS);
   const [currentUser, setCurrentUser] = useState(null);
-  const [authMode, setAuthMode] = useState("login"); // 'login' | 'register'
+  const [authMode, setAuthMode] = useState("login");
 
-  // فرم ورود و ثبت‌نام
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
     username: "",
@@ -111,8 +102,7 @@ export default function App() {
   });
   const [authError, setAuthError] = useState("");
 
-  // تقویم و نوبت‌ها
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState(7); // آبان ۱۴۰۵
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(7);
   const [schedules, setSchedules] = useState(buildInitialSchedules);
   const [selectedDateKey, setSelectedDateKey] = useState("1405-08-05");
   const [appointments, setAppointments] = useState([
@@ -129,11 +119,9 @@ export default function App() {
     },
   ]);
 
-  // تب‌های پنل کاربری و مدیریت
-  const [activeTab, setActiveTab] = useState("booking"); // 'booking' | 'my-appointments' | 'profile' | 'manage-schedule' | 'manage-appointments' | 'manage-users'
+  const [activeTab, setActiveTab] = useState("booking");
   const [toast, setToast] = useState(null);
 
-  // فرم مدیریت کاربران توسط منشی/ادمین
   const [newStaffForm, setNewStaffForm] = useState({
     username: "",
     password: "",
@@ -143,8 +131,8 @@ export default function App() {
     role: "secretary",
   });
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
+  const showToast = (message) => {
+    setToast(message);
     setTimeout(() => setToast(null), 3500);
   };
 
@@ -181,7 +169,8 @@ export default function App() {
       return;
     }
     const exists = users.some(
-      (u) => u.username.toLowerCase() === registerForm.username.trim().toLowerCase()
+      (u) =>
+        u.username.toLowerCase() === registerForm.username.trim().toLowerCase()
     );
     if (exists) {
       setAuthError("این نام کاربری قبلاً ثبت شده است.");
@@ -213,10 +202,9 @@ export default function App() {
   const handleLogout = () => {
     setCurrentUser(null);
     setLoginForm({ username: "", password: "" });
-    showToast("از حساب کاربری خارج شدید.", "info");
+    showToast("از حساب کاربری خارج شدید.");
   };
 
-  // محاسبه ظرفیت باقی‌مانده روز انتخاب‌شده
   const currentSchedule = schedules[selectedDateKey];
   const bookedForSelectedDay = useMemo(
     () =>
@@ -233,11 +221,11 @@ export default function App() {
   const handleBookAppointment = () => {
     if (!currentUser) return;
     if (!currentSchedule || !currentSchedule.isActive) {
-      showToast("این روز برای نوبت‌دهی فعال نیست.", "error");
+      showToast("این روز برای نوبت‌دهی فعال نیست.");
       return;
     }
     if (remainingCapacity <= 0) {
-      showToast("ظرفیت این روز تکمیل شده است.", "error");
+      showToast("ظرفیت این روز تکمیل شده است.");
       return;
     }
     const hasActiveInDay = appointments.some(
@@ -247,7 +235,7 @@ export default function App() {
         a.status === "booked"
     );
     if (hasActiveInDay) {
-      showToast("شما در این تاریخ یک نوبت فعال دارید.", "error");
+      showToast("شما در این تاریخ یک نوبت فعال دارید.");
       return;
     }
 
@@ -272,7 +260,7 @@ export default function App() {
     setAppointments((prev) =>
       prev.map((a) => (a.id === apptId ? { ...a, status: "cancelled" } : a))
     );
-    showToast("نوبت مورد نظر لغو شد.", "info");
+    showToast("نوبت مورد نظر لغو شد.");
   };
 
   const handleStatusChange = (apptId, newStatus) => {
@@ -295,12 +283,16 @@ export default function App() {
 
   const handleCreateUserByStaff = (e) => {
     e.preventDefault();
-    if (!newStaffForm.username.trim() || !newStaffForm.password.trim() || !newStaffForm.fullName.trim()) {
-      showToast("نام کاربری، رمز عبور و نام کامل الزامی است.", "error");
+    if (
+      !newStaffForm.username.trim() ||
+      !newStaffForm.password.trim() ||
+      !newStaffForm.fullName.trim()
+    ) {
+      showToast("نام کاربری، رمز عبور و نام کامل الزامی است.");
       return;
     }
     if (users.some((u) => u.username === newStaffForm.username.trim())) {
-      showToast("این نام کاربری تکراری است.", "error");
+      showToast("این نام کاربری تکراری است.");
       return;
     }
     const created = {
@@ -323,7 +315,7 @@ export default function App() {
 
   const toggleUserActive = (userId) => {
     if (currentUser && currentUser.id === userId) {
-      showToast("نمی‌توانید حساب فعال خود را غیرفعال کنید.", "error");
+      showToast("نمی‌توانید حساب فعال خود را غیرفعال کنید.");
       return;
     }
     setUsers((prev) =>
@@ -345,13 +337,12 @@ export default function App() {
 
   const activeMonth = JALALI_MONTHS[selectedMonthIndex];
 
-  // اگر کاربر وارد نشده باشد، صفحه ورود / ثبت‌نام نمایش داده می‌شود
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/40 to-slate-100 flex items-center justify-center p-4">
         {toast && (
           <div className="fixed top-5 left-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg text-sm">
-            {toast.message}
+            {toast}
           </div>
         )}
 
@@ -456,9 +447,9 @@ export default function App() {
 
                 <div className="mt-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-600 space-y-1">
                   <p className="font-bold text-slate-700">حساب‌های نمونه جهت تست:</p>
-                  <p>• منشی: نام کاربری <span className="font-mono font-bold">secretary</span> | رمز: <span className="font-mono font-bold">123</span></p>
-                  <p>• ادمین: نام کاربری <span className="font-mono font-bold">admin</span> | رمز: <span className="font-mono font-bold">123</span></p>
-                  <p>• بیمار: نام کاربری <span className="font-mono font-bold">patient1</span> | رمز: <span className="font-mono font-bold">123</span></p>
+                  <p>• منشی: <span className="font-mono font-bold">secretary</span> | رمز: <span className="font-mono font-bold">123</span></p>
+                  <p>• ادمین: <span className="font-mono font-bold">admin</span> | رمز: <span className="font-mono font-bold">123</span></p>
+                  <p>• بیمار: <span className="font-mono font-bold">patient1</span> | رمز: <span className="font-mono font-bold">123</span></p>
                 </div>
               </form>
             ) : (
@@ -553,11 +544,10 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800">
       {toast && (
         <div className="fixed top-5 left-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg text-sm">
-          {toast.message}
+          {toast}
         </div>
       )}
 
-      {/* هدر اصلی */}
       <header className="bg-slate-900 text-white sticky top-0 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -589,7 +579,6 @@ export default function App() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* منوی کناری */}
         <aside className="lg:col-span-3 space-y-2">
           <div className="bg-white rounded-2xl border border-slate-200/80 p-3 shadow-xs space-y-1">
             {currentUser.role === "patient" && (
@@ -664,7 +653,6 @@ export default function App() {
           </div>
         </aside>
 
-        {/* محتوای اصلی */}
         <main className="lg:col-span-9 space-y-6">
           {(activeTab === "booking" || activeTab === "manage-schedule") && (
             <div className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-6">
@@ -732,7 +720,9 @@ export default function App() {
                     const dayBookedCount = appointments.filter(
                       (a) => a.dateKey === key && a.status !== "cancelled"
                     ).length;
-                    const left = sch ? Math.max(0, sch.maxCapacity - dayBookedCount) : 0;
+                    const left = sch
+                      ? Math.max(0, sch.maxCapacity - dayBookedCount)
+                      : 0;
                     const isSelected = selectedDateKey === key;
 
                     return (
@@ -775,7 +765,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* جزئیات روز انتخاب‌شده */}
               {currentSchedule && (
                 <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
