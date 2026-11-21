@@ -718,60 +718,6 @@ export default function App() {
         </div>
       )}
 
-      {/* نوار ابزار بالای صفحه برای دسترسی سریع بین نقش‌ها */}
-      <div className="bg-[#0F2942] text-white text-xs py-2 px-4">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-slate-300">
-            <Sparkles className="w-4 h-4 text-teal-400" />
-            <span>
-              وضعیت حساب: <strong className="text-white">{currentUser ? `${currentUser.fullName} (${ROLE_LABELS[currentUser.role]})` : 'بازدیدکننده (لندینگ پیج)'}</strong>
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => setActiveView('landing')}
-              className={`px-3 py-1 rounded-lg font-medium transition ${
-                activeView === 'landing'
-                  ? 'bg-teal-500 text-white shadow-sm'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-              }`}
-            >
-              صفحه اصلی (لندینگ)
-            </button>
-            <button
-              onClick={() => quickSwitchDemoUser('monshi_clinic', 'doctor-dashboard')}
-              className={`px-3 py-1 rounded-lg font-medium transition ${
-                isStaff && activeView === 'doctor-dashboard'
-                  ? 'bg-teal-500 text-white shadow-sm'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-              }`}
-            >
-              پنل منشی / مدیریت کاربران
-            </button>
-            <button
-              onClick={() => quickSwitchDemoUser('negar_tavassoli', 'booking')}
-              className={`px-3 py-1 rounded-lg font-medium transition ${
-                currentUser?.role === 'patient' && activeView === 'booking'
-                  ? 'bg-teal-500 text-white shadow-sm'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-              }`}
-            >
-              پنل بیمار
-            </button>
-            <button
-              onClick={() => {
-                setCurrentUser(null);
-                setAuthMode('login');
-                setActiveView('auth');
-              }}
-              className="px-3 py-1 rounded-lg font-medium bg-slate-800 text-amber-300 hover:bg-slate-700 transition"
-            >
-              ورود / ثبت‌نام
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* هدر اصلی سایت */}
       <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 py-3.5 flex items-center justify-between gap-4">
